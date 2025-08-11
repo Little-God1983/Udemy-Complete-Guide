@@ -1,3 +1,4 @@
+using System;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private PlayerControls playerControls;
     private CharacterController characterController;
+    private Animator animator;
 
     public Vector3 MoveDirection;
 
@@ -12,13 +14,13 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 AimInput;
     public float speed = 1.5f;
     private float verticalVelocity;
-    [SerializeField]private LayerMask aimlayermask;
+    [SerializeField] private LayerMask aimlayermask;
     [SerializeField] private Transform aim; // Reference to the aim transform
 
     private void Awake()
     {
         playerControls = new PlayerControls();
-      
+
         playerControls.Character.Fire.performed += ctx => Shoot();
         playerControls.Character.Movement.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
         playerControls.Character.Movement.canceled += ctx => MoveInput = Vector2.zero;
@@ -29,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
     }
     private void Shoot()
     {
@@ -39,7 +42,24 @@ public class PlayerMovement : MonoBehaviour
     {
         ApplyMovement();
         AimTowardsMouse();
-        //UpdateAnimation();
+        UpdateAnimation();
+    }
+
+    private void UpdateAnimation()
+    {
+        float xVelocity = Vector3.Dot(MoveDirection.normalized, transform.right);
+        float zVelocity = Vector3.Dot(MoveDirection.normalized, transform.forward);
+        animator.SetFloat("xVelocity", xVelocity, .1f, Time.deltaTime);
+        animator.SetFloat("zVelocity", zVelocity, .1f, Time.deltaTime);
+        //if (MoveDirection.magnitude > 0)
+        //{
+        //    animator.SetBool("IsMoving", true);
+        //}
+        //else
+        //{
+        //    animator.SetBool("IsMoving", false);
+        //  }
+
     }
 
     private void ApplyMovement()
