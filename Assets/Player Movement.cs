@@ -14,8 +14,11 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 AimInput;
     public float speed = 1.5f;
     private float verticalVelocity;
+    private bool isRunning;
     [SerializeField] private LayerMask aimlayermask;
     [SerializeField] private Transform aim; // Reference to the aim transform
+    public float walkSpead;
+    public float runSpeed;
 
     private void Awake()
     {
@@ -27,6 +30,17 @@ public class PlayerMovement : MonoBehaviour
 
         playerControls.Character.Aim.performed += ctx => AimInput = ctx.ReadValue<Vector2>();
         playerControls.Character.Aim.canceled += ctx => AimInput = Vector2.zero;
+
+        playerControls.Character.Run.performed += ctx =>
+        {
+            speed = runSpeed;
+            isRunning = true;
+        };// Increase speed when running
+        playerControls.Character.Run.canceled += ctx =>
+        {
+            speed = walkSpead;
+            isRunning = false; // Reset speed when not running
+        };
     }
     private void Start()
     {
@@ -51,6 +65,15 @@ public class PlayerMovement : MonoBehaviour
         float zVelocity = Vector3.Dot(MoveDirection.normalized, transform.forward);
         animator.SetFloat("xVelocity", xVelocity, .1f, Time.deltaTime);
         animator.SetFloat("zVelocity", zVelocity, .1f, Time.deltaTime);
+        if(isRunning && MoveDirection.magnitude > 0.5f)
+        {
+            animator.SetBool("isRunning", true);
+        }
+        else
+        {
+            animator.SetBool("isRunning", false);
+        }
+     
         //if (MoveDirection.magnitude > 0)
         //{
         //    animator.SetBool("IsMoving", true);
