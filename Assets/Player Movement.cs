@@ -47,11 +47,7 @@ public class PlayerMovement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
     }
-    private void Shoot()
-    {
-        // Implement shooting logic here
-        Debug.Log("Shoot action performed");
-    }
+
     private void Update()
     {
         ApplyMovement();
@@ -83,6 +79,10 @@ public class PlayerMovement : MonoBehaviour
         //    animator.SetBool("IsMoving", false);
         //  }
 
+    }
+    private void Shoot()
+    {
+        animator.SetTrigger("Fire");
     }
 
     private void ApplyMovement()

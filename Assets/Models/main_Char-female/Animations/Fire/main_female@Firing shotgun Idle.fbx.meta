@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 81afdcdcbadb4ac40935203e66fbf9ea
+guid: 4196ea244b0b80947ba3a7e6ccfe687d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -34,8 +34,8 @@ ModelImporter:
       name: Firing shotgun
       takeName: mixamo.com
       internalID: -203655887218126122
-      firstFrame: 3.2
-      lastFrame: 30
+      firstFrame: 0
+      lastFrame: 0.2
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
