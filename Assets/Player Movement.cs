@@ -1,3 +1,4 @@
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -10,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 MoveInput;
     public Vector2 AimInput;
     public float speed = 1.5f;
+    private float verticalVelocity;
+    [SerializeField]private LayerMask aimlayermask;
+    [SerializeField] private Transform aim; // Reference to the aim transform
 
     private void Awake()
     {
@@ -34,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         ApplyMovement();
-        //AimTowardsMouse();
+        AimTowardsMouse();
         //UpdateAnimation();
     }
 
@@ -43,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         if (characterController != null)
         {
             MoveDirection = new Vector3(MoveInput.x, 0, MoveInput.y);
-            //ApplyGravity();
+            ApplyGravity();
             if (MoveDirection.magnitude > 0)
             {
                 characterController.Move(MoveDirection * Time.deltaTime * speed);
@@ -59,5 +63,30 @@ public class PlayerMovement : MonoBehaviour
     private void OnDisable()
     {
         playerControls.Disable();
+    }
+
+    private void ApplyGravity()
+    {
+        if (characterController.isGrounded)
+        {
+            verticalVelocity = -0.5f; // Small downward force to keep grounded
+        }
+        else
+        {
+            verticalVelocity -= 9.81f * Time.deltaTime; // Apply gravity
+        }
+        MoveDirection.y = verticalVelocity;
+    }
+
+    private void AimTowardsMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(AimInput);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, aimlayermask))
+        {
+            Vector3 aimDirection = (hit.point - transform.position).normalized;
+            aimDirection.y = 0; // Keep the aim direction horizontal
+            transform.forward = aimDirection; // Rotate the player to face the aim direction
+            aim.position = new Vector3(hit.point.x, aim.position.y, hit.point.z); // Update aim position
+        }
     }
 }
