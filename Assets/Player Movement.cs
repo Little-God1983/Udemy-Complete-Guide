@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    Player player;
     private PlayerControls playerControls;
     private CharacterController characterController;
     private Animator animator;
@@ -20,11 +21,12 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpead;
     public float runSpeed;
 
-    private void Awake()
-    {
-        playerControls = new PlayerControls();
 
-        playerControls.Character.Fire.performed += ctx => Shoot();
+    private void AssignInputEvents()
+    {
+        playerControls = player.controls;
+
+
         playerControls.Character.Movement.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
         playerControls.Character.Movement.canceled += ctx => MoveInput = Vector2.zero;
 
@@ -42,10 +44,13 @@ public class PlayerMovement : MonoBehaviour
             isRunning = false; // Reset speed when not running
         };
     }
+
     private void Start()
     {
+        player = GetComponent<Player>();
         characterController = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
+        AssignInputEvents();
     }
 
     private void Update()
@@ -80,10 +85,7 @@ public class PlayerMovement : MonoBehaviour
         //  }
 
     }
-    private void Shoot()
-    {
-        animator.SetTrigger("Fire");
-    }
+
 
     private void ApplyMovement()
     {
@@ -99,14 +101,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        playerControls.Enable();
-    }
-    private void OnDisable()
-    {
-        playerControls.Disable();
-    }
 
     private void ApplyGravity()
     {
