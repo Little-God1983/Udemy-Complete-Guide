@@ -9,14 +9,47 @@ public class WeaponVisualController : MonoBehaviour
     [SerializeField] private Transform shotgun;
     [SerializeField] private Transform SniperRifle;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    private void Update()
     {
-        
+        SwitchWeapons();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void SwitchWeapons()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SwitchOn(pistol);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SwitchOn(revolver);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SwitchOn(autoRifle);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SwitchOn(shotgun);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            SwitchOn(SniperRifle);
+        }
+    }
+
+    private void SwitchOn(Transform gun)
+    {
+        SwitchOffGuns();
+        gun.gameObject.SetActive(true);
+    }
+
+    private void SwitchOffGuns()
+    {         
+       foreach (var gun in gunTransforms)
+        {
+            gun.gameObject.SetActive(false);
+        }
     }
 }
